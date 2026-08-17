@@ -6,7 +6,10 @@ export async function loadConfig() {
   if (cachedConfig) return cachedConfig;
   let response;
   try {
-    response = await fetch('/config.json', { cache: 'no-store' });
+    // document.baseURI points to /software_dome/ on GitHub Pages and to /
+    // during local development. The hash-router never changes this base URL.
+    const configUrl = new URL('config.json', document.baseURI);
+    response = await fetch(configUrl, { cache: 'no-store' });
   } catch (error) {
     throw new AppError(
       'Die Konfigurationsdatei konnte nicht geladen werden.',
