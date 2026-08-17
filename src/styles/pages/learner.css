@@ -1,0 +1,430 @@
+.learner-title {
+  --stack-gap: 7px;
+}
+
+.learner-title h1 {
+  max-width: 720px;
+  letter-spacing: -0.045em;
+  font-size: clamp(30px, 6vw, 44px);
+  line-height: 1.06;
+}
+
+.learner-title p {
+  max-width: 610px;
+  color: var(--color-muted);
+}
+
+.step-label {
+  color: var(--color-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.privacy-note {
+  padding-top: 14px;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-muted);
+}
+
+.school-day-card,
+.school-confirm-card {
+  width: min(610px, 100%);
+  margin: 0 auto;
+}
+
+.school-day-options {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.school-day-option {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 92px;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.53);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.school-day-option > span:first-child {
+  display: none;
+}
+
+.school-day-option strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+}
+
+.school-day-option.is-selected {
+  border-color: rgba(214, 44, 64, 0.22);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
+  box-shadow: inset 0 0 0 1px rgba(214, 44, 64, 0.08);
+}
+
+.school-day-option__check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: none;
+}
+
+.school-day-option.is-selected .school-day-option__check {
+  display: block;
+}
+
+.school-confirm-card__day {
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--inner-light);
+  color: var(--color-accent);
+  font-size: 30px;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+}
+
+.holiday-note,
+.late-cancellation-note {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(154, 92, 10, 0.08);
+  color: var(--color-warning);
+  font-size: 12px;
+}
+
+.holiday-banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid rgba(154, 92, 10, 0.13);
+  border-radius: var(--radius-md);
+  background: rgba(154, 92, 10, 0.07);
+  color: var(--color-warning);
+}
+
+.holiday-banner p {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.course-list,
+.learner-booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.learner-course-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 11px 20px;
+  align-items: center;
+}
+
+.learner-course-card header,
+.learner-course-card h2,
+.learner-course-card p,
+.learner-course-card .course-card__meta {
+  grid-column: 1;
+}
+
+.learner-course-card > .button {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+}
+
+.learner-course-card h2,
+.learner-booking-card h2 {
+  letter-spacing: -0.03em;
+  font-size: 22px;
+}
+
+.learner-course-card p {
+  color: var(--color-muted);
+}
+
+.learner-course-card.is-disabled {
+  opacity: 0.66;
+}
+
+.course-card__duration {
+  display: none;
+}
+
+.course-card__meta span {
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(74, 66, 75, 0.06);
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.availability-search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 13px;
+  align-items: end;
+}
+
+.availability-search .form-message {
+  grid-column: 1 / -1;
+}
+
+.learner-box-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.learner-box-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 3px 12px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: var(--shadow-sm), var(--inner-light);
+  color: var(--color-ink);
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition);
+}
+
+.learner-box-card:hover {
+  border-color: rgba(214, 44, 64, 0.2);
+  transform: translateY(-2px);
+}
+
+.learner-box-card__icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  grid-row: 1 / span 2;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.learner-box-card small {
+  grid-column: 2;
+  color: var(--color-muted);
+}
+
+.learner-box-card__arrow {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  color: var(--color-muted);
+}
+
+.selection-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.selection-progress > div {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(50, 43, 51, 0.08);
+}
+
+.selection-progress > div span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+  transition: width var(--transition);
+}
+
+.date-option-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.date-option {
+  display: flex;
+  min-height: 98px;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.53);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.date-option span,
+.date-option small {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.date-option.is-selected {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: 0 8px 22px rgba(181, 28, 49, 0.2);
+  color: white;
+}
+
+.date-option.is-selected span,
+.date-option.is-selected small {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.date-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.mobile-action-bar {
+  margin-top: 8px;
+}
+
+.booking-summary-card header h2 {
+  margin-top: 10px;
+  letter-spacing: -0.03em;
+  font-size: 25px;
+}
+
+.booking-summary-card header p {
+  margin-top: 4px;
+  color: var(--color-muted);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--color-line);
+  border-radius: 15px;
+}
+
+.summary-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px;
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.summary-grid > div:nth-child(even) {
+  border-right: 0;
+}
+
+.summary-grid > div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.summary-grid span {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.cancellation-notice {
+  padding: 14px;
+  border-radius: 13px;
+  background: rgba(72, 64, 73, 0.06);
+}
+
+.cancellation-notice p {
+  margin-top: 4px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.review-actions {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+}
+
+.learner-booking-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.learner-booking-card.is-cancelled {
+  opacity: 0.65;
+}
+
+.booking-number {
+  color: var(--color-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+}
+
+@media (max-width: 620px) {
+  .school-day-options {
+    grid-template-columns: repeat(5, minmax(52px, 1fr));
+    overflow-x: auto;
+  }
+
+  .school-day-option > span:first-child {
+    display: block;
+    font-weight: 800;
+  }
+
+  .school-day-option strong {
+    display: none;
+  }
+
+  .learner-course-card {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .learner-box-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .date-option-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .availability-search,
+  .review-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .review-actions .button:first-child {
+    order: 2;
+  }
+
+  .holiday-banner {
+    grid-template-columns: auto 1fr;
+  }
+
+  .holiday-banner .button {
+    grid-column: 1 / -1;
+  }
+}
