@@ -1,0 +1,182 @@
+.home-page {
+  padding: 40px 0 54px;
+}
+
+.home-hero {
+  max-width: 870px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.hero-kicker,
+.eyebrow {
+  display: inline-flex;
+  color: var(--color-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.home-hero h1 {
+  margin-top: 13px;
+  letter-spacing: -0.06em;
+  font-size: clamp(43px, 7vw, 76px);
+  line-height: 0.98;
+}
+
+.home-hero h1 em {
+  color: var(--color-accent);
+  font-style: normal;
+}
+
+.home-hero p {
+  max-width: 620px;
+  margin: 18px auto 0;
+  color: var(--color-muted);
+  font-size: 17px;
+}
+
+.access-grid {
+  display: grid;
+  max-width: 980px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 0 auto;
+}
+
+.access-card {
+  display: flex;
+  min-height: 530px;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.access-card__glow {
+  position: absolute;
+  top: -110px;
+  right: -100px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(214, 44, 64, 0.08);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.access-card__header,
+.access-card__form,
+.access-card__footer {
+  position: relative;
+  z-index: 1;
+}
+
+.access-card__header {
+  margin-bottom: 26px;
+}
+
+.access-card__icon {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  margin-bottom: 23px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: var(--shadow-sm), var(--inner-light);
+  color: var(--color-accent);
+}
+
+.access-card h2 {
+  margin-top: 7px;
+  letter-spacing: -0.035em;
+  font-size: 28px;
+}
+
+.access-card__header p {
+  margin-top: 7px;
+  color: var(--color-muted);
+}
+
+.access-card__form {
+  --stack-gap: 15px;
+  flex: 1;
+}
+
+.access-card__footer {
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.single-auth-page,
+.setup-page {
+  display: grid;
+  padding: 50px 0;
+  place-items: center;
+}
+
+.single-auth-card,
+.setup-card,
+.not-found {
+  width: min(460px, 100%);
+  --stack-gap: 17px;
+  padding: 34px;
+}
+
+.single-auth-card h1,
+.setup-card h1,
+.not-found h1 {
+  letter-spacing: -0.04em;
+  font-size: 33px;
+  line-height: 1.08;
+}
+
+.setup-card__icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 19px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.setup-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.setup-steps li {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+}
+
+.setup-steps strong {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(70, 62, 71, 0.07);
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .home-page {
+    padding-top: 20px;
+  }
+
+  .access-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .access-card {
+    min-height: 0;
+  }
+}
