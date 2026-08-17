@@ -163,6 +163,8 @@ Im Admin-Bereich **Credits** öffnen und **Alle Credits auf 5 zurücksetzen** w�
 
 `npm run build` erzeugt die statischen Dateien in `dist/`. Der verwendete Hash-Router benötigt keine serverseitigen Rewrite-Regeln. Vor dem Deployment muss im ausgelieferten `public/config.json` die produktive Supabase-Konfiguration enthalten sein. Niemals einen Service-Role-Key ausliefern.
 
+Für GitHub Pages ist `.github/workflows/deploy-pages.yml` enthalten. Bei jedem Push auf `main` führt der Workflow die Tests aus, baut die Vite-Anwendung und veröffentlicht ausschliesslich den fertigen `dist/`-Ordner. In den Repository-Einstellungen unter **Pages → Build and deployment → Source** muss **GitHub Actions** ausgewählt sein. Der Vite-Build verwendet relative Assetpfade und funktioniert deshalb unter dem Repository-Pfad `/software_dome/`.
+
 Für eine neue Umgebung sind immer beide Schritte notwendig:
 
 1. SQL-Schema auf das zugehörige Supabase-Projekt anwenden.
