@@ -5,7 +5,7 @@ export async function listBookings({ search = '', status = '', from = '', to = '
   let query = getSupabase()
     .from('bookings')
     .select(
-      '*,learners(id,first_name,last_name,email),boxes(id,name),booking_days(id,booking_date,is_active)',
+      '*,learners:learners!bookings_learner_id_fkey(id,first_name,last_name,email),boxes(id,name),booking_days(id,booking_date,is_active)',
     )
     .order('created_at', { ascending: false });
   if (status) query = query.eq('status', status);

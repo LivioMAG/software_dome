@@ -59,7 +59,7 @@ export async function getWeekSchedule(monday) {
     getSupabase()
       .from('booking_days')
       .select(
-        'id,booking_date,box_id,booking_id,bookings!inner(id,status,course_title_snapshot,learners(first_name,last_name))',
+        'id,booking_date,box_id,booking_id,bookings!inner(id,status,course_title_snapshot,learners:learners!bookings_learner_id_fkey(first_name,last_name))',
       )
       .eq('is_active', true)
       .gte('booking_date', monday)
