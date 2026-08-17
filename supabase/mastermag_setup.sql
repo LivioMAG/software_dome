@@ -391,7 +391,9 @@ declare
   v_failed_count integer;
   v_learner_id uuid;
   v_token text;
-  v_expires_at timestamptz := now() + interval '2 hours';
+  -- Learners remain signed in on their device until they explicitly sign out.
+  -- Deactivating the learner still invalidates the session immediately.
+  v_expires_at timestamptz := 'infinity'::timestamptz;
 begin
   v_email_hash := extensions.digest(convert_to(v_email, 'UTF8'), 'sha256');
 

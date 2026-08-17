@@ -29,4 +29,9 @@ describe('Datenbank-Invarianten', () => {
     expect(sql).toContain("extensions.digest(convert_to(v_token, 'UTF8'), 'sha256')");
     expect(sql).not.toMatch(/session_token\s+text\s+not null/i);
   });
+
+  it('hält Lernende bis zum bewussten Abmelden angemeldet', () => {
+    expect(sql).toContain("v_expires_at timestamptz := 'infinity'::timestamptz");
+    expect(sql).toContain('set revoked_at = now()');
+  });
 });

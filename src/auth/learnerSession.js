@@ -8,7 +8,17 @@ import {
 import { AppError } from '../utils/errors.js';
 
 export function getLearnerToken() {
-  return sessionStorage.getItem(LEARNER_SESSION_KEY);
+  const persistedToken = localStorage.getItem(LEARNER_SESSION_KEY);
+  if (persistedToken) return persistedToken;
+
+  // Preserve sessions created by versions that stored the token only for the
+  // current browser tab, then migrate them to durable browser storage.
+  const legacyToken = sessionStorage.getItem(LEARNER_SESSION_KEY);
+  if (legacyToken) {
+    localStorage.setItem(LEARNER_SESSION_KEY, legacyToken);
+    sessionStorage.removeItem(LEARNER_SESSION_KEY);
+  }
+  return legacyToken;
 }
 
 export async function signInLearner(email, birthDate) {
@@ -23,7 +33,8 @@ export async function signInLearner(email, birthDate) {
       result?.error_code ?? 'INVALID_LEARNER_CREDENTIALS',
     );
   }
-  sessionStorage.setItem(LEARNER_SESSION_KEY, result.session_token);
+  localStorage.setItem(LEARNER_SESSION_KEY, result.session_token);
+  sessionStorage.removeItem(LEARNER_SESSION_KEY);
   const portal = await loadLearnerPortal();
   return portal;
 }
@@ -43,6 +54,7 @@ export async function loadLearnerPortal({ force = false } = {}) {
 }
 
 export function clearLearnerSession() {
+  localStorage.removeItem(LEARNER_SESSION_KEY);
   sessionStorage.removeItem(LEARNER_SESSION_KEY);
   store.set({ learner: null, learnerPortal: null });
   store.resetBooking();
