@@ -169,3 +169,45 @@ Für eine neue Umgebung sind immer beide Schritte notwendig:
 
 1. SQL-Schema auf das zugehörige Supabase-Projekt anwenden.
 2. Die statische App mit der passenden `config.json` bauen beziehungsweise ausliefern.
+
+## Erweiterung Geschäftsstellen, E-Mail und Box-Tablets einrichten
+
+Nach einem bestehenden MasterMag-Setup muss im Supabase SQL Editor zusätzlich
+`supabase/migrations/20260821_business_offices_tablet_documents.sql` ausgeführt werden. Die
+Migration erstellt Geschäftsstellen und GL-Kontakte, den 14-Tage-Schutz, Bemerkungen und
+Freigaben, Kursunterlagen sowie die geschützten Tablet-Sitzungen. Danach im Admin-Bereich:
+
+1. Unter **Geschäftsstellen** mindestens eine Geschäftsstelle samt Geschäftsleitung anlegen.
+2. Bei Kursen festlegen, ob eine Bemerkung Pflicht ist, und unter **Unterlagen** die PDFs oder
+   Bilder hochladen.
+3. Unter **Tablet-Zugang** einen sechsstelligen Code erzeugen. Auf dem Tablet `#/tablet`
+   öffnen, Box auswählen und diesen Code eingeben. Ein neuer Code trennt alle alten Geräte.
+
+### EmailJS
+
+1. Bei [EmailJS](https://www.emailjs.com/) ein Konto und einen E-Mail-Service erstellen.
+2. Zwei Templates erstellen: eines für Buchungsfreigaben und eines für Stornierungen.
+3. Im Buchungs-Template die Variablen `to_email`, `to_name`, `learner_name`, `course`,
+   `dates`, `remark` und `approval_url` verwenden. `approval_url` muss als anklickbarer Link
+   eingebunden werden.
+4. Im Stornierungs-Template stehen `to_email`, `to_name`, `learner_name`, `course`, `dates`
+   und `booking_number` zur Verfügung.
+5. Die öffentliche Laufzeitkonfiguration ergänzen (der Public Key ist für Browser-Clients
+   vorgesehen; niemals einen privaten Schlüssel eintragen):
+
+```json
+{
+  "supabaseUrl": "https://PROJECT.supabase.co",
+  "supabaseAnonKey": "SUPABASE_ANON_KEY",
+  "emailjs": {
+    "publicKey": "EMAILJS_PUBLIC_KEY",
+    "serviceId": "EMAILJS_SERVICE_ID",
+    "bookingTemplateId": "EMAILJS_BOOKING_TEMPLATE_ID",
+    "cancellationTemplateId": "EMAILJS_CANCELLATION_TEMPLATE_ID"
+  }
+}
+```
+
+Ohne vollständigen `emailjs`-Block bleibt die Anwendung funktionsfähig, überspringt jedoch
+den E-Mail-Versand. Für den produktiven Einsatz müssen die erlaubten Domains im
+EmailJS-Dashboard auf die eigene Deployment-Domain eingeschränkt werden.

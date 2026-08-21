@@ -102,8 +102,10 @@ export function homePage() {
         ],
         actionLabel: 'Weiter zur Kursbuchung',
         onSubmit: async ({ email, birth_date }) => {
-          await signInLearner(email, birth_date);
-          navigate('/learner/school-day');
+          const portal = await signInLearner(email, birth_date);
+          navigate(
+            portal.learner.business_office_id ? '/learner/school-day' : '/learner/business-office',
+          );
         },
         footer: 'Deine Angaben werden nicht dauerhaft in diesem Browser gespeichert.',
       }),

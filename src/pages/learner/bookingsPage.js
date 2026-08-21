@@ -8,6 +8,7 @@ import { normalizeError } from '../../utils/errors.js';
 import { button, card, emptyState, pageHeader, statusBadge } from '../../components/common/ui.js';
 import { confirmDialog } from '../../components/common/dialog.js';
 import { showToast } from '../../components/common/toast.js';
+import { sendCancellationEmail } from '../../lib/email.js';
 
 export async function learnerBookingsPage() {
   const portal = await loadLearnerPortal({ force: true });
@@ -57,7 +58,20 @@ export async function learnerBookingsPage() {
                           if (!confirmed) return;
                           try {
                             await cancelLearnerBooking(getLearnerToken(), booking.id);
+                            const emailSent = await sendCancellationEmail({
+                              to_email: portal.learner.gl_email,
+                              to_name: portal.learner.gl_name,
+                              learner_name: `${portal.learner.first_name} ${portal.learner.last_name}`,
+                              course: booking.course_title,
+                              dates: booking.dates.join(', '),
+                              booking_number: booking.booking_number,
+                            }).catch(() => false);
                             showToast('Deine Buchung wurde storniert.');
+                            if (!emailSent)
+                              showToast(
+                                'Stornierung gespeichert; die GL-E-Mail konnte nicht versendet werden.',
+                                'error',
+                              );
                             const refreshed = await loadLearnerPortal({ force: true });
                             bookings.splice(0, bookings.length, ...(refreshed.bookings ?? []));
                             render();

@@ -37,3 +37,7 @@ export async function loadConfig() {
   cachedConfig = Object.freeze(config);
   return cachedConfig;
 }
+
+export function getLoadedConfig() {
+  return cachedConfig;
+}

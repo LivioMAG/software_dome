@@ -15,6 +15,11 @@ import { boxesPage } from '../pages/admin/boxesPage.js';
 import { blocksPage } from '../pages/admin/blocksPage.js';
 import { bookingsPage } from '../pages/admin/bookingsPage.js';
 import { creditsPage } from '../pages/admin/creditsPage.js';
+import { businessOfficesPage } from '../pages/admin/businessOfficesPage.js';
+import { tabletAdminPage } from '../pages/admin/tabletAdminPage.js';
+import { businessOfficePage } from '../pages/learner/businessOfficePage.js';
+import { tabletPage } from '../pages/public/tabletPage.js';
+import { bookingApprovalPage } from '../pages/public/bookingApprovalPage.js';
 import { learnerLoginPage } from '../pages/learner/loginPage.js';
 import { schoolDayPage } from '../pages/learner/schoolDayPage.js';
 import { learnerCoursesPage } from '../pages/learner/coursesPage.js';
@@ -61,6 +66,14 @@ export const routes = [
     loading,
     onError,
   },
+  {
+    path: '/admin/business-offices',
+    title: 'Geschäftsstellen',
+    render: businessOfficesPage,
+    guard: adminGuard,
+    loading,
+    onError,
+  },
   { path: '/admin/boxes', title: 'Boxen', render: boxesPage, guard: adminGuard, loading, onError },
   {
     path: '/admin/blocks',
@@ -86,11 +99,35 @@ export const routes = [
     loading,
     onError,
   },
+  {
+    path: '/admin/tablet',
+    title: 'Tablet-Zugang',
+    render: tabletAdminPage,
+    guard: adminGuard,
+    loading,
+    onError,
+  },
+  { path: '/tablet', title: 'Box-Tablet', render: tabletPage, loading, onError },
+  {
+    path: '/booking-approval',
+    title: 'Buchung freigeben',
+    render: bookingApprovalPage,
+    loading,
+    onError,
+  },
   { path: '/learner/login', title: 'Kurs buchen', render: learnerLoginPage, loading, onError },
   {
     path: '/learner/school-day',
     title: 'Schultag',
     render: schoolDayPage,
+    guard: learnerGuard,
+    loading,
+    onError,
+  },
+  {
+    path: '/learner/business-office',
+    title: 'Geschäftsstelle',
+    render: businessOfficePage,
     guard: learnerGuard,
     loading,
     onError,

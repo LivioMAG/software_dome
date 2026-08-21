@@ -7,8 +7,16 @@ import { h, setBusy } from '../../utils/dom.js';
 import { formatDate } from '../../utils/dates.js';
 import { formatSchoolDay, pluralizeDays } from '../../utils/formatters.js';
 import { normalizeError } from '../../utils/errors.js';
-import { button, card, formMessage, pageHeader, statusBadge } from '../../components/common/ui.js';
+import {
+  button,
+  card,
+  formMessage,
+  pageHeader,
+  statusBadge,
+  textareaField,
+} from '../../components/common/ui.js';
 import { showToast } from '../../components/common/toast.js';
+import { sendBookingApprovalEmail } from '../../lib/email.js';
 
 export async function bookingReviewPage() {
   const draft = store.get().bookingDraft;
@@ -20,6 +28,15 @@ export async function bookingReviewPage() {
   const learner = portal.learner;
   const after = learner.credit_balance - draft.course.duration_days;
   const message = formMessage();
+  const remarkField = textareaField({
+    label: `Bemerkung${draft.course.remark_required ? ' (Pflicht)' : ' (optional)'}`,
+    name: 'remark',
+    required: draft.course.remark_required,
+    maxlength: 1000,
+    help: draft.course.remark_required
+      ? 'Dieser Kurs verlangt eine Bemerkung.'
+      : 'Zusätzliche Informationen für die Geschäftsleitung.',
+  });
   const confirmButton = button('Verbindlich buchen', {
     trailingIcon: 'check',
     class: 'full-width',
@@ -28,18 +45,40 @@ export async function bookingReviewPage() {
     setBusy(confirmButton, true, 'Buchung wird geprüft …');
     message.classList.add('is-hidden');
     try {
+      if (draft.course.remark_required && !remarkField.value.trim()) {
+        message.textContent = 'Bitte gib für diesen Kurs eine Bemerkung ein.';
+        message.classList.remove('is-hidden');
+        setBusy(confirmButton, false);
+        return;
+      }
       const result = await createLearnerBooking(
         getLearnerToken(),
         draft.course.id,
         draft.box.id,
         draft.dates,
         draft.holidayMode,
+        remarkField.value,
       );
+      const approvalUrl = `${window.location.origin}${window.location.pathname}#/booking-approval?token=${result.approval_token ?? ''}`;
+      const emailSent = await sendBookingApprovalEmail({
+        to_email: learner.gl_email,
+        to_name: learner.gl_name,
+        learner_name: `${learner.first_name} ${learner.last_name}`,
+        course: draft.course.title,
+        dates: draft.dates.join(', '),
+        remark: remarkField.value || '–',
+        approval_url: approvalUrl,
+      }).catch(() => false);
       store.resetBooking();
       await loadLearnerPortal({ force: true });
       showToast(
         `Buchung ${result.booking_number ?? result.booking_id?.slice(0, 8).toUpperCase()} wurde bestätigt.`,
       );
+      if (!emailSent)
+        showToast(
+          'Buchung gespeichert; die E-Mail an die GL konnte nicht versendet werden.',
+          'error',
+        );
       navigate('/learner/bookings');
     } catch (error) {
       message.textContent = normalizeError(error).message;
@@ -71,6 +110,7 @@ export async function bookingReviewPage() {
           h('h2', { text: draft.course.title }),
           h('p', { text: draft.course.short_description }),
         ),
+        remarkField,
         h(
           'div',
           { class: 'summary-grid' },
