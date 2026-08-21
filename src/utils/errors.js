@@ -16,6 +16,9 @@ const ERROR_MESSAGES = {
   CANCELLATION_TOO_LATE:
     'Diese Buchung kann nicht mehr selbst storniert werden. Bitte wende dich an den Administrator.',
   NOT_ADMIN: 'Du besitzt keine Berechtigung für den Administrationsbereich.',
+  TABLET_ACCESS_DENIED:
+    'Der Verbindungscode ist ungültig oder die ausgewählte Arbeitsbox ist nicht aktiv.',
+  TABLET_CODE_FORMAT: 'Der Verbindungscode muss aus genau sechs Ziffern bestehen.',
 };
 
 export function normalizeError(

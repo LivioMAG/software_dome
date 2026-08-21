@@ -137,6 +137,29 @@ export function homePage() {
         },
         footer: 'Geschützter Zugang für die verantwortliche Administration.',
       }),
+      card(
+        { class: 'access-card access-card--tablet' },
+        h('div', { class: 'access-card__glow', 'aria-hidden': 'true' }),
+        h(
+          'header',
+          { class: 'access-card__header' },
+          h('span', { class: 'access-card__icon', html: icon('box', 23) }),
+          h('span', { class: 'eyebrow', text: 'Für Box-Tablets' }),
+          h('h2', { text: 'Tablet-Zugang' }),
+          h('p', {
+            text: 'Verbinde dieses Gerät direkt mit einer Arbeitsbox und zeige die Tagesplanung an.',
+          }),
+        ),
+        button('Tablet-Oberfläche öffnen', {
+          href: '#/tablet',
+          class: 'full-width access-card__tablet-action',
+          trailingIcon: 'arrowRight',
+        }),
+        h('footer', {
+          class: 'access-card__footer',
+          text: 'Du benötigst den sechsstelligen Verbindungscode aus der Administration.',
+        }),
+      ),
     ),
   );
   return publicShell(content);
