@@ -1,14 +1,22 @@
 import { adminShell } from '../../app/appShell.js';
 import { generateTabletCode, getTabletCode } from '../../api/tabletApi.js';
 import { h, setBusy } from '../../utils/dom.js';
+import { normalizeError } from '../../utils/errors.js';
 import { button, card, pageHeader } from '../../components/common/ui.js';
 import { showToast } from '../../components/common/toast.js';
 
 export async function tabletAdminPage() {
-  const currentCode = await getTabletCode();
+  let currentCode = null;
+  let codeLoadFailed = false;
+  try {
+    currentCode = await getTabletCode();
+  } catch {
+    // A failed lookup must not hide the action that creates (and returns) a new code.
+    codeLoadFailed = true;
+  }
   const code = h('strong', {
     class: 'tablet-code',
-    text: currentCode ?? 'Noch kein Code',
+    text: currentCode ?? (codeLoadFailed ? 'Code konnte nicht geladen werden' : 'Noch kein Code'),
   });
   const action = button('Neuen Code erstellen', {
     icon: 'lock',
@@ -17,6 +25,8 @@ export async function tabletAdminPage() {
       try {
         code.textContent = await generateTabletCode();
         showToast('Alle bisherigen Tablet-Verbindungen wurden getrennt.');
+      } catch (error) {
+        showToast(normalizeError(error).message, 'error');
       } finally {
         setBusy(event.currentTarget, false);
       }
