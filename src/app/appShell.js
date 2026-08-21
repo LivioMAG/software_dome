@@ -9,11 +9,13 @@ const adminNav = [
   ['/admin/dashboard', 'Übersicht', 'dashboard'],
   ['/admin/calendar', 'Wochenplanung', 'calendar'],
   ['/admin/learners', 'Lernende', 'users'],
+  ['/admin/business-offices', 'Geschäftsstellen', 'users'],
   ['/admin/courses', 'Kurse', 'course'],
   ['/admin/boxes', 'Boxen', 'box'],
   ['/admin/blocks', 'Sperrzeiten', 'lock'],
   ['/admin/bookings', 'Buchungen', 'booking'],
   ['/admin/credits', 'Credits', 'credits'],
+  ['/admin/tablet', 'Tablet-Zugang', 'lock'],
 ];
 
 function navLink([path, label, iconName]) {

@@ -1,5 +1,12 @@
 import { adminShell } from '../../app/appShell.js';
-import { listCourses, saveCourse, setCourseActive } from '../../api/coursesApi.js';
+import {
+  deleteCourseDocument,
+  listCourseDocuments,
+  listCourses,
+  saveCourse,
+  setCourseActive,
+  uploadCourseDocument,
+} from '../../api/coursesApi.js';
 import { h, setBusy } from '../../utils/dom.js';
 import { formatProfessionScope, pluralizeDays } from '../../utils/formatters.js';
 import { PROFESSION_SCOPES } from '../../constants/businessRules.js';
@@ -18,6 +25,49 @@ import {
 import { dataTable } from '../../components/common/dataTable.js';
 import { confirmDialog, openDialog } from '../../components/common/dialog.js';
 import { showToast } from '../../components/common/toast.js';
+
+async function documentsDialog(course) {
+  const documents = await listCourseDocuments(course.id);
+  const list = h(
+    'div',
+    { class: 'stack' },
+    documents.map((document) =>
+      h(
+        'div',
+        { class: 'split' },
+        h('span', { text: document.file_name }),
+        button('Löschen', {
+          variant: 'ghost',
+          onClick: async () => {
+            await deleteCourseDocument(document);
+            showToast('Dokument gelöscht.');
+            documentsDialog(course);
+          },
+        }),
+      ),
+    ),
+  );
+  const input = h('input', { type: 'file', accept: '.pdf,image/png,image/jpeg', multiple: true });
+  openDialog({
+    title: `Unterlagen · ${course.title}`,
+    description:
+      'PDF- und Bilddateien bis 20 MB. Diese Unterlagen gelten für alle Buchungen des Kurses.',
+    content: h('div', { class: 'stack' }, list, input),
+    actions: [
+      { label: 'Schliessen' },
+      {
+        label: 'Hochladen',
+        variant: 'primary',
+        onClick: async (event, close) => {
+          setBusy(event.currentTarget, true, 'Hochladen …');
+          await Promise.all([...input.files].map((file) => uploadCourseDocument(course.id, file)));
+          close();
+          showToast('Unterlagen hochgeladen.');
+        },
+      },
+    ],
+  });
+}
 
 function courseDialog(course, onSaved) {
   const message = formMessage();
@@ -69,6 +119,16 @@ function courseDialog(course, onSaved) {
         ],
       }),
     ),
+    h(
+      'label',
+      { class: 'check-row' },
+      h('input', {
+        type: 'checkbox',
+        name: 'remark_required',
+        checked: course?.remark_required ?? false,
+      }),
+      h('span', { text: 'Bemerkung bei der Buchung verpflichtend' }),
+    ),
     message,
   );
   openDialog({
@@ -85,6 +145,7 @@ function courseDialog(course, onSaved) {
           try {
             const values = Object.fromEntries(new FormData(form));
             values.active = values.active === 'true';
+            values.remark_required = values.remark_required === 'on';
             await saveCourse(values, course?.id);
             close();
             showToast(course ? 'Kurs wurde aktualisiert.' : 'Kurs wurde erstellt.');
@@ -131,6 +192,7 @@ export async function coursesPage() {
               render: (row) => `Ab ${row.minimum_apprenticeship_year}. Lehrjahr`,
             },
             { label: 'Zielgruppe', render: (row) => formatProfessionScope(row.profession_scope) },
+            { label: 'Bemerkung', render: (row) => (row.remark_required ? 'Pflicht' : 'Optional') },
             {
               label: 'Status',
               render: (row) =>
@@ -145,6 +207,7 @@ export async function coursesPage() {
               'div',
               { class: 'cluster' },
               iconButton('edit', 'Kurs bearbeiten', () => courseDialog(row, render)),
+              button('Unterlagen', { variant: 'ghost', onClick: () => documentsDialog(row) }),
               iconButton(
                 row.active ? 'close' : 'check',
                 row.active ? 'Archivieren' : 'Aktivieren',

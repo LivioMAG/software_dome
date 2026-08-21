@@ -2,6 +2,8 @@ import { LEARNER_SESSION_KEY } from '../constants/businessRules.js';
 import { store } from '../app/store.js';
 import {
   createLearnerSession,
+  getLearnerBusinessOffice,
+  getLearnerCourseRequirements,
   getLearnerPortalData,
   revokeLearnerSession,
 } from '../api/learnerApi.js';
@@ -44,7 +46,16 @@ export async function loadLearnerPortal({ force = false } = {}) {
   if (!token) return null;
   if (!force && store.get().learnerPortal) return store.get().learnerPortal;
   try {
-    const portal = await getLearnerPortalData(token);
+    const [portal, office, requirements] = await Promise.all([
+      getLearnerPortalData(token),
+      getLearnerBusinessOffice(token),
+      getLearnerCourseRequirements(token),
+    ]);
+    portal.learner = { ...portal.learner, ...office };
+    portal.courses = portal.courses.map((course) => ({
+      ...course,
+      remark_required: requirements[course.id] ?? false,
+    }));
     store.set({ learner: portal.learner, learnerPortal: portal });
     return portal;
   } catch (error) {
@@ -78,5 +89,6 @@ export async function learnerGuard() {
 export async function learnerSchoolDayGuard() {
   const redirect = await learnerGuard();
   if (redirect) return redirect;
+  if (!store.get().learner?.business_office_id) return '/learner/business-office';
   return store.get().learner?.school_weekday ? null : '/learner/school-day';
 }

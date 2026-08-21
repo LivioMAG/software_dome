@@ -4,7 +4,7 @@ import { store } from '../../app/store.js';
 import { getLearnerToken } from '../../auth/learnerSession.js';
 import { getCourseBoxAvailability } from '../../api/learnerApi.js';
 import { h, setBusy } from '../../utils/dom.js';
-import { formatDate, formatWeekday, todayIso } from '../../utils/dates.js';
+import { addDays, formatDate, formatWeekday, todayIso } from '../../utils/dates.js';
 import { normalizeError } from '../../utils/errors.js';
 import {
   button,
@@ -27,7 +27,8 @@ export async function availabilityPage() {
   let selectedBox = draft.box;
   let selectedDates = [...draft.dates];
   let availability = draft.availability;
-  let startDate = draft.startDate ?? todayIso();
+  const earliestDate = addDays(todayIso(), 14);
+  let startDate = draft.startDate ?? earliestDate;
 
   const loadAvailability = async (submitButton) => {
     setBusy(submitButton, true, 'Verfügbarkeit prüfen …');
@@ -144,9 +145,9 @@ export async function availabilityPage() {
         name: 'start_date',
         type: 'date',
         value: startDate,
-        min: todayIso(),
+        min: earliestDate,
         required: true,
-        help: 'Wir prüfen dieses Datum und die folgenden sechs Kalendertage.',
+        help: `Frühestens 14 Tage im Voraus. Wir prüfen dieses Datum und die folgenden sechs Kalendertage.`,
       }),
       checkButton,
       message,

@@ -89,3 +89,8 @@
     align-items: flex-start;
   }
 }
+.tablet-code {
+  font-size: clamp(2rem, 8vw, 4rem);
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+}

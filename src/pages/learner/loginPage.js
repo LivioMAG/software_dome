@@ -23,8 +23,10 @@ export function learnerLoginPage() {
         message.classList.add('is-hidden');
         try {
           const values = Object.fromEntries(new FormData(event.currentTarget));
-          await signInLearner(values.email, values.birth_date);
-          navigate('/learner/school-day');
+          const portal = await signInLearner(values.email, values.birth_date);
+          navigate(
+            portal.learner.business_office_id ? '/learner/school-day' : '/learner/business-office',
+          );
         } catch (error) {
           message.textContent = normalizeError(
             error,
