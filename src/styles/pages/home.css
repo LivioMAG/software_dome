@@ -139,6 +139,22 @@
   line-height: 1.08;
 }
 
+.tablet-date-control {
+  display: flex;
+  min-width: min(390px, 100%);
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.tablet-date-control .field {
+  flex: 1;
+}
+
+.tablet-date-control .button {
+  margin-bottom: 19px;
+  white-space: nowrap;
+}
+
 .setup-card__icon {
   display: grid;
   width: 58px;
@@ -197,5 +213,19 @@
 
   .access-card {
     min-height: 0;
+  }
+
+  .tablet-page > .split,
+  .tablet-date-control {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tablet-date-control {
+    min-width: 100%;
+  }
+
+  .tablet-date-control .button {
+    margin-bottom: 0;
   }
 }

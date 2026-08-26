@@ -12,12 +12,16 @@ import {
 import { formatDate, todayIso } from '../../utils/dates.js';
 import { normalizeError } from '../../utils/errors.js';
 import { getSupabase } from '../../lib/supabaseClient.js';
+import { clearTabletDate, getTabletDate, setTabletDate } from '../../utils/tabletDateSimulation.js';
 
 const TOKEN_KEY = 'mastermag_tablet_token';
+
 export async function tabletPage() {
   const root = h('div', { class: 'tablet-page stack' });
-  const showDay = async (token, date = todayIso()) => {
+  const showDay = async (token, date = getTabletDate()) => {
     const data = await getBoxTabletDay(token, date);
+    const actualDate = todayIso();
+    const isSimulated = date !== actualDate;
     const bookings = data.bookings.map((booking) =>
       card(
         { class: 'stack' },
@@ -53,13 +57,33 @@ export async function tabletPage() {
           h('span', { class: 'eyebrow', text: 'Verbunden' }),
           h('h1', { text: data.box_name }),
         ),
-        field({
-          label: 'Datum',
-          name: 'date',
-          type: 'date',
-          value: date,
-          onChange: (event) => showDay(token, event.target.value),
-        }),
+        h(
+          'div',
+          { class: 'tablet-date-control' },
+          field({
+            label: 'Als heutigen Tag simulieren',
+            name: 'tablet-date',
+            type: 'date',
+            value: date,
+            help: isSimulated
+              ? `Simulation aktiv · Tatsächlich heute: ${formatDate(actualDate)}`
+              : 'Das tatsächliche heutige Datum wird verwendet.',
+            onChange: async (event) => {
+              if (!event.target.value) return;
+              setTabletDate(event.target.value);
+              await showDay(token, event.target.value);
+            },
+          }),
+          isSimulated
+            ? button('Echtes Datum verwenden', {
+                variant: 'secondary',
+                onClick: async () => {
+                  clearTabletDate();
+                  await showDay(token, actualDate);
+                },
+              })
+            : null,
+        ),
       ),
       data.bookings.length
         ? h('section', { class: 'box-grid' }, bookings)
@@ -71,6 +95,7 @@ export async function tabletPage() {
         variant: 'ghost',
         onClick: () => {
           localStorage.removeItem(TOKEN_KEY);
+          clearTabletDate();
           window.location.reload();
         },
       }),
