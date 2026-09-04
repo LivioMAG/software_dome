@@ -25,6 +25,7 @@ export function button(label, options = {}) {
     {
       class: `button button--${options.variant ?? 'primary'} ${options.class ?? ''}`.trim(),
       type: options.href ? undefined : (options.type ?? 'button'),
+      form: options.form,
       href: options.href,
       disabled: options.disabled,
       title: options.title,
