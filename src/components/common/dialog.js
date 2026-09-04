@@ -60,8 +60,13 @@ export function openDialog({
               button(action.label, {
                 variant: action.variant ?? 'secondary',
                 type: action.type,
+                form: action.form,
                 disabled: action.disabled,
-                onClick: action.onClick ? (event) => action.onClick(event, close) : () => close(),
+                onClick: action.onClick
+                  ? (event) => action.onClick(event, close)
+                  : action.type === 'submit'
+                    ? undefined
+                    : () => close(),
               }),
             ),
           )

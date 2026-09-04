@@ -13,9 +13,32 @@ import { showToast } from '../../components/common/toast.js';
 
 function officeDialog(office, refresh) {
   const message = formMessage();
+  let closeDialog;
   const form = h(
     'form',
-    { class: 'stack' },
+    {
+      id: 'business-office-form',
+      class: 'stack',
+      'on:submit': async (event) => {
+        event.preventDefault();
+        const submit = event.submitter;
+        setBusy(submit, true, 'Speichern …');
+        message.classList.add('is-hidden');
+        try {
+          await saveBusinessOffice(
+            Object.fromEntries(new FormData(event.currentTarget)),
+            office?.id,
+          );
+          closeDialog();
+          showToast('Geschäftsstelle gespeichert.');
+          await refresh();
+        } catch (error) {
+          message.textContent = normalizeError(error).message;
+          message.classList.remove('is-hidden');
+          setBusy(submit, false);
+        }
+      },
+    },
     field({
       label: 'Geschäftsstelle',
       name: 'name',
@@ -56,7 +79,7 @@ function officeDialog(office, refresh) {
     ),
     message,
   );
-  openDialog({
+  ({ close: closeDialog } = openDialog({
     title: office ? 'Geschäftsstelle bearbeiten' : 'Geschäftsstelle erstellen',
     content: form,
     actions: [
@@ -64,22 +87,11 @@ function officeDialog(office, refresh) {
       {
         label: 'Speichern',
         variant: 'primary',
-        onClick: async (event, close) => {
-          setBusy(event.currentTarget, true, 'Speichern …');
-          try {
-            await saveBusinessOffice(Object.fromEntries(new FormData(form)), office?.id);
-            close();
-            showToast('Geschäftsstelle gespeichert.');
-            await refresh();
-          } catch (error) {
-            message.textContent = normalizeError(error).message;
-            message.classList.remove('is-hidden');
-            setBusy(event.currentTarget, false);
-          }
-        },
+        type: 'submit',
+        form: 'business-office-form',
       },
     ],
-  });
+  }));
 }
 
 export async function businessOfficesPage() {
