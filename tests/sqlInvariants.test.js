@@ -2,6 +2,14 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const sql = readFileSync(new URL('../supabase/mastermag_setup.sql', import.meta.url), 'utf8');
+const businessOfficeMigration = readFileSync(
+  new URL('../supabase/migrations/20260821_business_offices_tablet_documents.sql', import.meta.url),
+  'utf8',
+);
+const learnerLoginFix = readFileSync(
+  new URL('../supabase/migrations/20260826_fix_learner_login.sql', import.meta.url),
+  'utf8',
+);
 
 describe('Datenbank-Invarianten', () => {
   it('erzwingt eine aktive Belegung pro Box und Datum', () => {
@@ -33,5 +41,20 @@ describe('Datenbank-Invarianten', () => {
   it('hält Lernende bis zum bewussten Abmelden angemeldet', () => {
     expect(sql).toContain("v_expires_at timestamptz := 'infinity'::timestamptz");
     expect(sql).toContain('set revoked_at = now()');
+  });
+
+  it('deklariert sitzungsaktualisierende Lernenden-Funktionen als volatile', () => {
+    expect(businessOfficeMigration).toContain(
+      'get_learner_business_office(p_session_token text)\nreturns jsonb language sql security definer set search_path = pg_catalog, public as $$',
+    );
+    expect(businessOfficeMigration).toContain(
+      'get_learner_course_requirements(p_session_token text)\nreturns jsonb language sql security definer set search_path = pg_catalog, public as $$',
+    );
+    expect(learnerLoginFix).toContain(
+      'alter function public.get_learner_business_office(text) volatile',
+    );
+    expect(learnerLoginFix).toContain(
+      'alter function public.get_learner_course_requirements(text) volatile',
+    );
   });
 });

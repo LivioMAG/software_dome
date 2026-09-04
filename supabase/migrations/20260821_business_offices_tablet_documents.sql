@@ -88,14 +88,14 @@ begin
   return jsonb_build_object('business_office_id', p_office_id);
 end; $$;
 create or replace function public.get_learner_business_office(p_session_token text)
-returns jsonb language sql security definer set search_path = pg_catalog, public stable as $$
+returns jsonb language sql security definer set search_path = pg_catalog, public as $$
   select jsonb_build_object('business_office_id', l.business_office_id, 'business_office_name', o.name,
     'gl_name', o.gl_first_name||' '||o.gl_last_name, 'gl_email', o.gl_email)
   from public.learners l left join public.business_offices o on o.id=l.business_office_id
   where l.id=public.validate_learner_session(p_session_token)
 $$;
 create or replace function public.get_learner_course_requirements(p_session_token text)
-returns jsonb language sql security definer set search_path = pg_catalog, public stable as $$
+returns jsonb language sql security definer set search_path = pg_catalog, public as $$
   select coalesce(jsonb_object_agg(c.id, c.remark_required), '{}'::jsonb)
   from public.courses c where public.validate_learner_session(p_session_token) is not null and c.active
 $$;
