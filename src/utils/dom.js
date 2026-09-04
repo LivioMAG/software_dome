@@ -18,6 +18,10 @@ export function h(tag, attributes = {}, ...children) {
       });
     } else if (key.startsWith('on:') && typeof value === 'function') {
       element.addEventListener(key.slice(3), value);
+    } else if (key === 'form') {
+      // `form` is a read-only DOM property on form-associated elements. Assigning
+      // to it throws instead of linking an external submit button to its form.
+      element.setAttribute(key, String(value));
     } else if (key in element && !key.startsWith('aria-')) {
       element[key] = value;
     } else {
