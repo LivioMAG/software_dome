@@ -1,6 +1,17 @@
 import { h } from '../../utils/dom.js';
 import { button, iconButton } from './ui.js';
 
+export function getDialogRegion() {
+  const existingRegion = document.querySelector('#dialog-region');
+  if (existingRegion) return existingRegion;
+
+  // Keep dialogs usable when an older/cached HTML shell does not yet contain
+  // the dedicated mount point.
+  const region = h('div', { id: 'dialog-region' });
+  document.body.append(region);
+  return region;
+}
+
 export function openDialog({
   title,
   description,
@@ -9,7 +20,7 @@ export function openDialog({
   size = 'medium',
   onClose,
 }) {
-  const region = document.querySelector('#dialog-region');
+  const region = getDialogRegion();
   const previouslyFocused = document.activeElement;
   let closed = false;
   const close = (result = null) => {
@@ -94,10 +105,12 @@ export function openDialog({
   };
   backdrop.addEventListener('keydown', keyHandler);
   region.append(backdrop);
-  requestAnimationFrame(() => {
+  const showDialog = () => {
     backdrop.classList.add('is-open');
     backdrop.querySelector('input, select, textarea, button')?.focus();
-  });
+  };
+  if (typeof requestAnimationFrame === 'function') requestAnimationFrame(showDialog);
+  else showDialog();
   return { close, element: backdrop };
 }
 
