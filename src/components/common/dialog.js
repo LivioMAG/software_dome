@@ -38,7 +38,10 @@ export function openDialog({
   const backdrop = h(
     'div',
     {
-      class: 'dialog-backdrop',
+      // The dialog must not depend on a scheduled animation frame to become
+      // visible. Animation frames can be delayed (for example in background
+      // tabs), which previously left an already mounted dialog transparent.
+      class: 'dialog-backdrop is-open',
       'on:mousedown': (event) => {
         if (event.target === backdrop) close();
       },
@@ -105,12 +108,11 @@ export function openDialog({
   };
   backdrop.addEventListener('keydown', keyHandler);
   region.append(backdrop);
-  const showDialog = () => {
-    backdrop.classList.add('is-open');
+  const focusDialog = () => {
     backdrop.querySelector('input, select, textarea, button')?.focus();
   };
-  if (typeof requestAnimationFrame === 'function') requestAnimationFrame(showDialog);
-  else showDialog();
+  if (typeof requestAnimationFrame === 'function') requestAnimationFrame(focusDialog);
+  else focusDialog();
   return { close, element: backdrop };
 }
 
