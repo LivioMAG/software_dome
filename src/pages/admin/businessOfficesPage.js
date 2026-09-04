@@ -80,7 +80,7 @@ function officeDialog(office, refresh) {
     message,
   );
   ({ close: closeDialog } = openDialog({
-    title: office ? 'Geschäftsstelle bearbeiten' : 'Geschäftsstelle erstellen',
+    title: office ? 'Geschäftsstelle bearbeiten' : 'Geschäftsstelle erfassen',
     content: form,
     actions: [
       { label: 'Abbrechen' },
@@ -141,7 +141,7 @@ export async function businessOfficesPage() {
     });
     container.replaceChildren(
       pageHeader('Geschäftsstellen', 'Geschäftsleitung (GL) und Kontaktdaten verwalten.', [
-        button('Geschäftsstelle erstellen', {
+        button('Geschäftsstelle erfassen', {
           icon: 'plus',
           onClick: () => officeDialog(null, render),
         }),
